@@ -37,12 +37,21 @@ public class StartGame {
 	public static void main(String[] args) {
 		
 		boolean exit = false;
-		
+
 		Hero hero = null;
 		
-//		hero = startHero();
+		System.out.println("O que você deseja.");
+		System.out.println("Começar um jogo novo: (1)");
+		System.out.println("Carregar um jogo salvo: (2)");
 		
-		hero = loadGameSaved();
+		int option = in.nextInt();
+		
+		if(option==1) {
+			hero = newGame();
+		}
+		else if(option==2) {
+			hero = loadGameSaved("Eldenurin");
+		}
 		
 		if(hero==null) {
 			System.out.print("Creature Name: ");
@@ -69,17 +78,18 @@ public class StartGame {
 		int stage = 0;
 		
 		while(!exit) {
-			System.out.println("Update Status: 'u' ");
 			System.out.println("Save: 's' ");
 			System.out.println("Exit: 'e' ");
 			System.out.println("Battle: 'b' ");
 			System.out.println("Search Provioes: 'p'");
 			System.out.println("Testar Sorte: 't'");
+			System.out.println("Lancar um dado: 'l'");
 			System.out.println("Dream Battle: 'bs'");
 
 			String choice = in.next();
 			
-			if(choice.equalsIgnoreCase("U")) {
+			if(choice.equalsIgnoreCase("L")) {
+				System.out.println(BasicsFunctions.throwDice());
 			}
 			else if(choice.equalsIgnoreCase("S")) {
 				System.out.print("Stage number: ");
@@ -179,7 +189,7 @@ public class StartGame {
 		
 	}
 	
-	public static Hero startHero() {
+	public static Hero newGame() {
 		Hero hero = BasicsFunctions.createHero(true);
 		
 		System.out.println("\n" +
@@ -202,10 +212,13 @@ public class StartGame {
 		switch (choice) {
 		case 1:
 			potion = new HabilityPotion();
+			break;
 		case 2:
 			potion = new EnergyPotion();
+			break;
 		case 3:
 			potion = new LuckPotion();
+			break;
 		}
 		
 		return potion;

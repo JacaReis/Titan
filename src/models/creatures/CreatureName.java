@@ -4,12 +4,18 @@ import models.creatures.special.Bhorket;
 import models.creatures.special.HomemGorgulho;
 
 public enum CreatureName {
-	
+
+//	Especiais
 	HOMEM_GORGULHO(new HomemGorgulho(8, 11)),
 	BHORKET(new Bhorket(8, 11)),
 	
+//	Normais
 	FALCAO_SANGUE_GIGANTE("Falcão-Sangue Gigante", 7, 12),
+	RAIZES("Raízes", 6, 12),
+	LAGARTO_KOMODO("Lagarto Komodo", 6, 8),
+	ALTERADOR_DE_FORMA("Alterador de Forma", 10, 10),
 	
+//	Errantes
 	EMPTY("",0,0),
 	LOBO("Lobo", 7, 6),
 	ALCE("Alce", 6, 12),

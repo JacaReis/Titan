@@ -7,7 +7,7 @@ public class Provisao extends Item {
 	private int quantity;
 	
 	public Provisao() {
-		super("Uma refeição simples");
+		super("","Uma refeiÃ§Ã£o simples");
 		this.quantity = 0;
 	}
 	
