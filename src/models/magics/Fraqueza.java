@@ -5,7 +5,7 @@ import models.creatures.Creature;
 public class Fraqueza extends Magic {
 
 	public Fraqueza() {
-		super("Reduz a ENERGIA do oponente em 4 pontos.");
+		super("Fraqueza", "Reduz a ENERGIA do oponente em 4 pontos.");
 	}
 	
 	@Override

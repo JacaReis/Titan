@@ -1,5 +1,7 @@
 package models.dreamCreatures;
 
+import models.creatures.Creature;
+
 public class DreamCreature {
 
 	private String name;
@@ -24,5 +26,10 @@ public class DreamCreature {
 	
 	public boolean noPower() {
 		return this.power==0;
+	}
+	
+	public void effect(Creature creature) {
+//		FIXME Receber uma criatura com poder (PowerCreature)
+//		Especificar em cada criatura
 	}
 }

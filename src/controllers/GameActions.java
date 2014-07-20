@@ -8,7 +8,7 @@ import models.creatures.Hero;
 import models.creatures.MagicHero;
 import models.dreamCreatures.DreamCreature;
 import models.equipament.armour.LeatherArmour;
-import models.equipament.weapon.TelassaSword;
+import models.equipament.weapon.TelessaSword;
 import models.itens.EnergyPotion;
 import models.itens.HabilityPotion;
 import models.itens.Item;
@@ -79,15 +79,17 @@ public class GameActions {
 				System.out.println();
 			}
 			
-			int dices_oponent = throwDices(2);
+			int dice_1_oponent = throwDice();
+			int dice_2_oponent = throwDice();
 			
-			int oponent_attack_power = (oponent.getHability() + dices_oponent);
+			int oponent_attack_power = (oponent.getHability() + dice_1_oponent + dice_2_oponent);
 			
 			System.out.println("Poder de ataque do "+oponent.getName()+": " + oponent_attack_power);
 			
-			int dices_hero = throwDices(2);
+			int dice_1_hero = throwDice();
+			int dice_2_hero = throwDice();
 			
-			int hero_attack_power = (hero.getHability() + dices_hero);
+			int hero_attack_power = (hero.getHability() + dice_1_hero + dice_2_hero);
 			
 			System.out.println("Seu poder de ataque: " + hero_attack_power);
 			
@@ -133,7 +135,7 @@ public class GameActions {
 		Creature[] creatures = new Creature[quant];
 		
 		for(int i = 0; i < creatures.length; i++) {
-			System.out.println("Qual o nome da criatura: ");
+			System.out.print("Qual o nome da criatura: ");
 			String name = in.next();
 			creatures[i] = EnumCreature.valueOf(name).getCreature();
 		}
@@ -146,6 +148,7 @@ public class GameActions {
 			heroWin = simpleBattle(hero, creatures[0]);
 		}
 		else {
+		// FIXME Tratar batalha com mais de um oponente
 			System.out.println("Only shit... /o\\");
 		}
 		
@@ -224,21 +227,24 @@ public class GameActions {
 				System.out.println();
 			}
 			
-			System.out.println("Lancar dados!");
+			System.out.print("Lancar dados (y): ");
 			in.next();
 			
-			int dices = throwDices(2);
+			int dices = throwDice() + throwDice();
 			System.out.println("O valor dos dados foi: " + dices);
 			
-			if(dices >= 7) {
-				creature.lostPower(2);
+			if(2 <= dices && dices <= 7) {
+				System.out.println("O " + creature.getName() + " tirou 2 pontos do seu poder.");
+				hero.losePower(2);
 			}
 			else {
-				hero.lostPower(2);
+				System.out.println("Você tirou 2 pontos de poder do " + creature.getName() + ".");
+				creature.lostPower(2);
 			}
 			
 			isFighting = !(creature.noPower() || hero.noPower());
 			
+			System.out.println();
 		}
 		
 		return hero.getPower()!=0;
@@ -248,7 +254,7 @@ public class GameActions {
 	public void searchProvisions(Hero hero) {
 		int dice = throwDice();
 		
-		Creature creature = EnumCreature.valueOf(errantes_1[dice]).getCreature();
+		Creature creature = EnumCreature.valueOf(errantes_1[dice-1]).getCreature();
 		
 //		Se nao selecionou uma "criatura vazia", deve lutar
 		if(!creature.getName().equalsIgnoreCase("")) {
@@ -261,7 +267,7 @@ public class GameActions {
 		}
 		
 		if(!hero.isDead()) {
-			int quant = this.throwDices(2);
+			int quant = throwDice() + throwDice();
 			
 			System.out.println("Voce encontrou "+quant+" provisoes");
 			
@@ -281,7 +287,7 @@ public class GameActions {
 		hero.addItemInBag(selectPotion(choice));
 		
 //		FIXME Generalizar para a construcao de qualquer heroi com suas armas especificas
-		hero.setWeapon(new TelassaSword());
+		hero.setWeapon(new TelessaSword());
 		hero.setArmour(new LeatherArmour());
 	}
 	

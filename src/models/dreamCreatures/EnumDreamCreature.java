@@ -2,19 +2,21 @@ package models.dreamCreatures;
 
 public enum EnumDreamCreature {
 
-	FANTASMA_DA_NEVE("Fantasma da Neve", 14),
-	MORCEGO_VAMPIRO("Morcego Vampiro", 16),
+	FANTASMA_DA_NEVE(new FantasmaDaNeve(14)),
+	MORCEGO_VAMPIRO(new MorcegoVampiro(16)),
 	;
 	
-	private String name;
-	private int power;
+	private DreamCreature dreamCreature;
+	
+	private EnumDreamCreature(DreamCreature dreamCreature) {
+		this.dreamCreature = dreamCreature;
+	}
 	
 	private EnumDreamCreature(String name, int power) {
-		this.name = name;
-		this.power = power;
+		this.dreamCreature = new DreamCreature(name, power);
 	}
 	
 	public DreamCreature getCreature() {
-		return new DreamCreature(this.name, this.power);
+		return this.dreamCreature;
 	}
 }

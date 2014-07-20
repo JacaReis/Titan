@@ -59,10 +59,6 @@ public class Hero extends Creature {
 		return bag;
 	}
 	
-//	public int getProvisoes() {
-//		return provision;
-//	}
-	
 	public int getStage() {
 		return stage;
 	}
@@ -72,10 +68,6 @@ public class Hero extends Creature {
 	public void setLuck(int luck) {
 		this.luck = luck;
 	}
-
-//	public void setProvisoes(int provision) {
-//		this.provision = provision;
-//	}
 
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
@@ -118,9 +110,23 @@ public class Hero extends Creature {
 		}
 	}
 	
+	public void useItem(Item item, Creature creature) {
+		item.use(creature);
+		
+		this.addItemInBag(item, -1);
+		int quant = this.bag.get(item);
+		
+		if(quant == 0 && !item.getName().equalsIgnoreCase("PROVISION")) {
+			this.bag.remove(item);
+		}
+	}
+	
 	public void incrementProvisoes(int quant) {
-		int provions = this.bag.get(0);
-		this.bag.put(new Provision(), provions+quant);
+		addItemInBag(new Provision(), quant);
+	}
+	
+	public void receiveLuck(int adicional) {
+		this.luck = Math.min(this.initLuck, Math.max(0, (this.luck + adicional)) );
 	}
 	
 	/* Overrides */

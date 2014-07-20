@@ -5,7 +5,7 @@ import models.creatures.Creature;
 public class Provision extends Item {
 
 	public Provision() {
-		super("Uma refeição simples","Provision");
+		super("Uma refeição simples", "Provision");
 	}
 	
 	@Override

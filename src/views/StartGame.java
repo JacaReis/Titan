@@ -10,6 +10,7 @@ import models.creatures.Hero;
 import models.creatures.MagicHero;
 import models.dreamCreatures.DreamCreature;
 import models.dreamCreatures.EnumDreamCreature;
+import models.itens.Item;
 
 public class StartGame {
 
@@ -29,6 +30,8 @@ public class StartGame {
 		actions.add("update");
 		actions.add("search");
 		actions.add("dices");
+		actions.add("status");
+		actions.add("stage");
 		
 		ProgramActions program = new ProgramActions();
 		GameActions game = new GameActions();
@@ -49,12 +52,14 @@ public class StartGame {
 			hero = program.loadGame();
 		}
 		
-		boolean finishProgram = false;
+		System.out.println();
+		
+		boolean finishProgram = (hero==null);
 		
 		while(!finishProgram) {
 			
-			System.out.println("O que deseja fazer:");
 			System.out.println(actions);
+			System.out.print("O que deseja fazer: ");
 			action = in.next();
 			
 //			Program Actions
@@ -75,7 +80,7 @@ public class StartGame {
 //				FIXME Tentar incluir magia na batalha
 				game.battle(hero);
 				
-				if(!hero.isDead()) {
+				if(hero.isDead()) {
 					System.out.println("\nGame Over!!!\n");
 					
 					program.extitGame(hero.getName(), hero);
@@ -92,24 +97,35 @@ public class StartGame {
 				
 				DreamCreature creature = EnumDreamCreature.valueOf(name).getCreature();
 				boolean win = game.dreamBattle((MagicHero) hero, creature);
-				
-				if(win) ;
-				
+
 				((MagicHero) hero).setPower(power);
+				
+				if(!win) {
+					creature.effect(hero);
+				}
 				
 			}
 			else if(action.equalsIgnoreCase("USE_ITEM")) {
 				System.out.println("Escolha um item: ");
 				
-				for(int i = 1; i <= hero.getBag().size(); i++) {
-					System.out.println(i + " - " + hero.getBag().get(i));
+				for(Item item : hero.getBag().keySet()) {
+					int quant = hero.getBag().get(item);
+//					FIXME Tratar para apresentar todos os itens, mas so permitir utilizar os que ainda tiverem
+					if(quant > 0) System.out.println(item.getName() + " ["+quant+"]");
 				}
 				
-				int item = in.nextInt() - 1;
+				String name = in.next();
 				
-				hero.getBag().get(item);
+				Item item = null;
 				
-//				TODO Completar codigo
+				for(Item iten : hero.getBag().keySet()) {
+					if(iten.getName().equalsIgnoreCase(name)) {
+						item = iten;
+					}
+				}
+				
+				hero.useItem(item, hero);
+				
 			}
 			else if(action.equalsIgnoreCase("TEST_LUCK")) {
 
@@ -128,7 +144,7 @@ public class StartGame {
 					
 					if(magichero.getPower() > 0) {
 						for(int i = 1; i <= magichero.getMagics().size(); i++) {
-							System.out.println(i+ " - " + magichero.getMagics().get(i));
+							System.out.println(i+ " - " + magichero.getMagics().get(i-1));
 						}
 						
 						System.out.print("Escolha uma magia para utilizar: ");
@@ -148,10 +164,18 @@ public class StartGame {
 				System.out.println("Indique os valores em ordem: ");
 				String[] values = in.next().split(",");
 				
-				hero.setHability(hero.getHability() + Integer.parseInt(values[0]));
-				hero.setEnergy(hero.getEnergy() + Integer.parseInt(values[0]));
-				hero.setLuck(hero.getLuck() + Integer.parseInt(values[0]));
-				((MagicHero) hero).setPower(((MagicHero) hero).getPower() + Integer.parseInt(values[0]));
+				hero.receiveHability(Integer.parseInt(values[0]));
+				hero.receiveEnergy(Integer.parseInt(values[1]));
+				hero.receiveLuck(Integer.parseInt(values[2]));
+				((MagicHero) hero).receivePower(Integer.parseInt(values[3]));
+				
+				if(hero.isDead()) {
+					System.out.println("Game Over!");
+					
+					program.extitGame(hero.getName(), hero);
+					
+					finishProgram = true;
+				}
 				
 			}
 			else if(action.equalsIgnoreCase("SEARCH")) {
@@ -163,6 +187,24 @@ public class StartGame {
 				
 				game.throwDices(quant);
 				
+			}
+			else if(action.equalsIgnoreCase("STATUS")) {
+				int h = hero.getHability();
+				int iH = hero.getInitHability();
+				int e = hero.getEnergy();
+				int iE = hero.getInitEnergy();
+				int l = hero.getLuck();
+				int iL = hero.getInitLuck();
+				int p = ((MagicHero)hero).getPower();
+				
+				System.out.println(hero.getName() + 
+						" = [ H: " + h + "/" + iH +
+						", E: " + e + "/" + iE +
+						", L: " + l + "/" + iL +
+						", P:" + p + " ]");
+			}
+			else if(action.equalsIgnoreCase("STAGE")) {
+				System.out.println("Stage: " + hero.getStage());
 			}
 			
 			System.out.println();

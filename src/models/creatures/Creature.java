@@ -12,6 +12,7 @@ public abstract class Creature {
 	protected int initHability, hability;
 	protected int initEnergy, energy;
 	
+//	FIXME Tratar todas as criaturas como subclasses desta, Criaturas Normais, Criaturas com ataque ou defesa especial, Criaturas com sorte (Heroi incluso), Criaturas dos sonhos, Criaturas com magia (MagicHero incluso), etc.
 	public Creature(String name, int hability, int energy) {
 		this.name = name;
 		
@@ -55,15 +56,25 @@ public abstract class Creature {
 	}
 	
 	public void receiveDamage(int damage) {
-		this.energy = Math.max(0, this.energy - damage);
+//		this.energy = Math.max(0, this.energy - damage);
+		this.receiveEnergy(0-damage);
 	}
 
+	public void receiveHability(int adicional) {
+		this.hability = Math.min(this.initHability, Math.max(0, (this.hability + adicional)) );
+	}
+	
 	public void receiveEnergy(int adicional) {
-		this.energy = Math.min(this.initEnergy, (this.energy + adicional) );
+		this.energy = Math.min(this.initEnergy, Math.max(0, (this.energy + adicional)) );
 	}
 	
 	public boolean isDead() {
 		return this.energy == 0;
+	}
+
+	public void attack(Creature creature, int damage) {
+		System.out.println("O " + this.name + " lhe aplicou " + damage + " de dano.");
+		creature.receiveDamage(damage);
 	}
 	
 	@Override
@@ -76,9 +87,4 @@ public abstract class Creature {
 		return str;
 	}
 
-	public void attack(Creature creature, int damage) {
-		System.out.println("O " + this.name + " lhe aplicou " + damage + " de dano.");
-		creature.receiveDamage(damage);
-	}
-	
 }

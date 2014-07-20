@@ -1,10 +1,10 @@
 package models.equipament;
 
-import models.equipament.weapon.TelassaSword;
+import models.equipament.weapon.TelessaSword;
 
 public enum EnumWeapon {
 
-	TelassaSword(new TelassaSword()),
+	TelessaSword(new TelessaSword()),
 	;
 	
 	private Weapon weapon;
