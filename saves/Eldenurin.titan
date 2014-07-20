@@ -1,14 +1,13 @@
 Name:Eldenurin
-Init Hability:12
-Hability:10
-Init Energy:20
-Energy:8
-Init Luck:8
-Luck:4
-Init Power:13
-Power:14
+Init Hability:7
+Hability:7
+Init Energy:19
+Energy:17
+Init Luck:10
+Luck:6
+Power:12
 Provisoes:6
 Weapon:TelassaSword
 Armour:LeatherArmour
-Bag:{[LuckPotion]}
-Stage:239
+Bag:{[EnergyPotion]}
+Stage:360

@@ -207,7 +207,7 @@ public class BasicsFunctions {
 			int dices = lancarDoisDados();
 			System.out.println("O valor dos dados foi: " + dices);
 			
-			if(dices > 7) {
+			if(dices >= 7) {
 				creature.lostPower(2);
 			}
 			else {

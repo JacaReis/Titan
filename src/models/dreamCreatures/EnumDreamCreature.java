@@ -2,7 +2,9 @@ package models.dreamCreatures;
 
 public enum EnumDreamCreature {
 
-	FANTASMA_DA_NEVE("Fantasma da Neve", 14);
+	FANTASMA_DA_NEVE("Fantasma da Neve", 14),
+	MORCEGO_VAMPIRO("Morcego Vampiro", 16),
+	;
 	
 	private String name;
 	private int power;

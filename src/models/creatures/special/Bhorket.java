@@ -1,7 +1,6 @@
 package models.creatures.special;
 
 import models.creatures.Creature;
-import models.creatures.Hero;
 
 public class Bhorket extends Creature {
 

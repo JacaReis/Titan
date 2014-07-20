@@ -1,14 +1,12 @@
 Name:Jaca
 Init Hability:12
 Hability:12
-Init Energy:20
-Energy:20
-Init Luck:8
-Luck:8
-Init Power:12
+Init Energy:19
+Energy:19
+Init Luck:11
+Luck:11
 Power:12
-Provisoes:0
 Weapon:TelassaSword
 Armour:LeatherArmour
-Bag:{[LuckPotion]}
+Bag:{EnergyPotion=1, Provision=0}
 Stage:0

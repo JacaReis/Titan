@@ -5,6 +5,7 @@ public enum EnumItem {
 	HabilityPotion(new HabilityPotion()),
 	EnergyPotion(new EnergyPotion()),
 	LuckPotion(new LuckPotion()),
+	Provision(new Provision()),
 	;
 	
 	private Item item;

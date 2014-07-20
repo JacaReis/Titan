@@ -1,112 +1,119 @@
 package views;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Scanner;
+import java.util.Vector;
 
-import models.busnisses.BasicsFunctions;
-import models.creatures.Creature;
-import models.creatures.CreatureName;
+import controllers.GameActions;
+import controllers.ProgramActions;
+
 import models.creatures.Hero;
 import models.creatures.MagicHero;
 import models.dreamCreatures.DreamCreature;
 import models.dreamCreatures.EnumDreamCreature;
-import models.equipament.Armour;
-import models.equipament.EnumArmour;
-import models.equipament.EnumWeapon;
-import models.equipament.Weapon;
-import models.equipament.armour.LeatherArmour;
-import models.equipament.weapon.TelassaSword;
-import models.itens.EnergyPotion;
-import models.itens.EnumItem;
-import models.itens.HabilityPotion;
-import models.itens.Item;
-import models.itens.LuckPotion;
 
 public class StartGame {
 
 	private static Scanner in = new Scanner(System.in);
 
-	private static String[] errantes_1 = {
-		"EMPTY", "LOBO", "ALCE", "URSO", "GIGANTE_DA_FLORESTA", "EMPTY"};
-	
-	private static int stage;
-	
 	public static void main(String[] args) {
 		
-		boolean exit = false;
-
+		Vector<String> actions = new Vector<String>();
+		actions.add("save");
+		actions.add("exit");
+		actions.add("walk");
+		actions.add("battle");
+		actions.add("dream_battle");
+		actions.add("use_item");
+		actions.add("test_luck");
+		actions.add("use_magic");
+		actions.add("update");
+		actions.add("search");
+		actions.add("dices");
+		
+		ProgramActions program = new ProgramActions();
+		GameActions game = new GameActions();
+		
 		Hero hero = null;
 		
-		System.out.println("O que você deseja.");
-		System.out.println("Começar um jogo novo: (1)");
-		System.out.println("Carregar um jogo salvo: (2)");
+		System.out.println("O que deseja fazer:");
+		System.out.println("Começar um jogo novo: 'new'");
+		System.out.println("Carregar um jogo salvo: 'load'");
 		
-		int option = in.nextInt();
+		String action = in.next();
 		
-		if(option==1) {
-			hero = newGame();
+		if(action.equalsIgnoreCase("NEW")) {
+			hero = game.createHero(true);
+			game.choicePotion(hero);
 		}
-		else if(option==2) {
-			hero = loadGameSaved("Eldenurin");
-		}
-		
-		if(hero==null) {
-			System.out.print("Creature Name: ");
-			String name = in.next();
-			
-			System.out.print("Creature Hability: ");
-			int hability = in.nextInt();
-			
-			System.out.print("Creature Energy: ");
-			int energy = in.nextInt();
-			
-			System.out.print("Creature Luck: ");
-			int luck = in.nextInt();
-			
-			System.out.print("Creature Power: ");
-			int power = in.nextInt();
-			
-			hero = new MagicHero(name, hability, energy, luck, power);
-			hero.setArmour(new LeatherArmour());
-			hero.setWeapon(new TelassaSword());
-			hero.addItemInBag(new LuckPotion());
+		else if(action.equalsIgnoreCase("LOAD")) {
+			hero = program.loadGame();
 		}
 		
-		int stage = 0;
+		boolean finishProgram = false;
 		
-		while(!exit) {
-			System.out.println("Save: 's' ");
-			System.out.println("Exit: 'e' ");
-			System.out.println("Battle: 'b' ");
-			System.out.println("Search Provioes: 'p'");
-			System.out.println("Testar Sorte: 't'");
-			System.out.println("Lancar um dado: 'l'");
-			System.out.println("Dream Battle: 'bs'");
+		while(!finishProgram) {
+			
+			System.out.println("O que deseja fazer:");
+			System.out.println(actions);
+			action = in.next();
+			
+//			Program Actions
+			if(action.equalsIgnoreCase("SAVE")) {
+				program.saveGame(hero.getName(), hero);
+			}
+			else if(action.equalsIgnoreCase("EXIT")) {
+				program.extitGame(hero.getName(), hero);
+				finishProgram = true;
+			}
+//			Game Actions
+			else if(action.equalsIgnoreCase("WALK")) {
+				System.out.print("Proximo estagio: ");
+				int stage = in.nextInt();
+				hero.setStage(stage);
+			}
+			else if(action.equalsIgnoreCase("BATTLE")) {
+//				FIXME Tentar incluir magia na batalha
+				game.battle(hero);
+				
+				if(!hero.isDead()) {
+					System.out.println("\nGame Over!!!\n");
+					
+					program.extitGame(hero.getName(), hero);
+					
+					finishProgram = true;
+				}
+				
+			}
+			else if(action.equalsIgnoreCase("DREAM_BATTLE")) {
+				int power = ((MagicHero) hero).getPower();
+				
+				System.out.print("Qual o nome da criatura: ");
+				String name = in.next();
+				
+				DreamCreature creature = EnumDreamCreature.valueOf(name).getCreature();
+				boolean win = game.dreamBattle((MagicHero) hero, creature);
+				
+				if(win) ;
+				
+				((MagicHero) hero).setPower(power);
+				
+			}
+			else if(action.equalsIgnoreCase("USE_ITEM")) {
+				System.out.println("Escolha um item: ");
+				
+				for(int i = 1; i <= hero.getBag().size(); i++) {
+					System.out.println(i + " - " + hero.getBag().get(i));
+				}
+				
+				int item = in.nextInt() - 1;
+				
+				hero.getBag().get(item);
+				
+//				TODO Completar codigo
+			}
+			else if(action.equalsIgnoreCase("TEST_LUCK")) {
 
-			String choice = in.next();
-			
-			if(choice.equalsIgnoreCase("L")) {
-				System.out.println(BasicsFunctions.throwDice());
-			}
-			else if(choice.equalsIgnoreCase("S")) {
-				System.out.print("Stage number: ");
-				
-				stage = in.nextInt();
-				
-				saveGame(hero, stage);
-				
-			}
-			else if(choice.equalsIgnoreCase("E")) {
-				saveGame(hero, stage);
-				
-				exit = true;
-			}
-			else if(choice.equalsIgnoreCase("T")) {
-				
-				boolean hasLuck = BasicsFunctions.testLuck(hero);
+				boolean hasLuck = game.testLuck(hero);
 				
 				if(hasLuck) {
 					System.out.println("Voce teve sorte!");
@@ -114,240 +121,55 @@ public class StartGame {
 				else {
 					System.out.println("Voce foi azarado!");
 				}
-				
 			}
-			else if(choice.equalsIgnoreCase("P")) {
-				
-				System.out.print("Lance um dado para escolher uma criatura: ");
-				in.next();
-				
-				int dice = BasicsFunctions.throwDice();
-				boolean win = true;
-				
-				Creature creature = CreatureName.valueOf(errantes_1[dice]).getCreature();
-				
-				if(!creature.getName().equalsIgnoreCase("")) {
-					System.out.println("Voce encontrou um"+creature.getName()+"!\n" +
-							"Voce tem que derrota-la!");
+			else if(action.equalsIgnoreCase("USE_MAGIC")) {
+				if(hero instanceof MagicHero) {
+					MagicHero magichero = (MagicHero) hero;
 					
-					win = BasicsFunctions.battle(hero, creature);
-				}
-				
-				if(win) {
-					int quant = BasicsFunctions.lancarDoisDados();
-					
-					System.out.println("Voce encontrou "+quant+" provisoes");
-					
-					hero.incrementProvisoes(quant);
+					if(magichero.getPower() > 0) {
+						for(int i = 1; i <= magichero.getMagics().size(); i++) {
+							System.out.println(i+ " - " + magichero.getMagics().get(i));
+						}
+						
+						System.out.print("Escolha uma magia para utilizar: ");
+						int n = in.nextInt() - 1;
+						
+						magichero.useMagic(n);
+					}
+					else {
+						System.out.println("Voce nao tem poder suficiente para lancar uma magia.");
+					}
 				}
 				else {
-					exit = true;
-					
-					System.out.println("Game Over");
-				}
-				
-				
-			}
-			else if(choice.equalsIgnoreCase("B")) {
-				System.out.print("Number of creatures: ");
-				int quantCreatures = in.nextInt();
-				Creature[] creatures = new Creature[quantCreatures];
-				
-				for(int i = 0; i < quantCreatures; i++) {
-					System.out.print("Creature name: ");
-					String nameCreature = in.next();
-					
-					creatures[i] = CreatureName.valueOf(nameCreature).getCreature();
-				}
-				
-				boolean win = BasicsFunctions.battle(hero, creatures);
-				
-				if(!win) {
-					exit = true;
-					
-					System.out.println("Game Over");
-				}
-				else {
-					System.out.println(((MagicHero) hero).toString());
+					System.out.println("O heroi nao pode usar magia. :(");
 				}
 			}
-			else if(choice.equalsIgnoreCase("BS")) {
+			else if(action.equalsIgnoreCase("UPDATE")) {
+				System.out.println("Indique os valores em ordem: ");
+				String[] values = in.next().split(",");
 				
-				int power = ((MagicHero) hero).getPower();
-				
-				System.out.print("Creature name: ");
-				String nameCreature = in.next();
-				
-				DreamCreature creature = EnumDreamCreature.valueOf(nameCreature).getCreature();
-				
-				BasicsFunctions.dreamBattle((MagicHero) hero, creature);
-				
-				((MagicHero) hero).setPower(power);
+				hero.setHability(hero.getHability() + Integer.parseInt(values[0]));
+				hero.setEnergy(hero.getEnergy() + Integer.parseInt(values[0]));
+				hero.setLuck(hero.getLuck() + Integer.parseInt(values[0]));
+				((MagicHero) hero).setPower(((MagicHero) hero).getPower() + Integer.parseInt(values[0]));
 				
 			}
+			else if(action.equalsIgnoreCase("SEARCH")) {
+				game.searchProvisions(hero);
+			}
+			else if(action.equalsIgnoreCase("DICES")) {
+				System.out.print("Quantos dados deseja lancar: ");
+				int quant = in.nextInt();
+				
+				game.throwDices(quant);
+				
+			}
+			
+			System.out.println();
+			
 		}
-		
-	}
-	
-	public static Hero newGame() {
-		Hero hero = BasicsFunctions.createHero(true);
-		
-		System.out.println("\n" +
-				"Escolha uma Pocao:\n" +
-				"1 - Pocao de Habilidade\n" +
-				"2 - Pocao de Energia\n" +
-				"3 - Pocao de Sorte\n");
-		
-		int choice = in.nextInt();
-		hero.addItemInBag(selectPotion(choice));
-		hero.setWeapon(new TelassaSword());
-		hero.setArmour(new LeatherArmour());
-		
-		return hero;
-	}
-	
-	public static Item selectPotion(int choice) {
-		Item potion = null;
-		
-		switch (choice) {
-		case 1:
-			potion = new HabilityPotion();
-			break;
-		case 2:
-			potion = new EnergyPotion();
-			break;
-		case 3:
-			potion = new LuckPotion();
-			break;
-		}
-		
-		return potion;
-	}
-	
-	public static void saveGame(Hero hero, int stage) {
-		try {
-			
-			FileWriter fw = new FileWriter("saves/"+hero.getName()+".titan");
-			
-			// Salvando os dados
-			fw.write("Name:" + hero.getName() + "\n");
-			
-			fw.write("Init Hability:" + hero.getInitHability() + "\n");
-			fw.write("Hability:" + hero.getHability() + "\n");
-			
-			fw.write("Init Energy:" + hero.getInitEnergy() + "\n");
-			fw.write("Energy:" + hero.getEnergy() + "\n");
-			
-			fw.write("Init Luck:" + hero.getInitLuck() + "\n");
-			fw.write("Luck:" + hero.getLuck() + "\n");
-			
-			if(hero instanceof MagicHero) {
-				MagicHero magicHero = (MagicHero) hero;
-				fw.write("Init Power:" + magicHero.getInitPower() + "\n");
-				fw.write("Power:" + magicHero.getPower() + "\n");
-			}
-			
-			fw.write("Provisoes:" + hero.getProvisoes() + "\n");
-			
-			fw.write("Weapon:" + hero.getWeapon().toString() + "\n");
-			fw.write("Armour:" + hero.getArmour().toString() + "\n");
-			
-			fw.write("Bag:{" + hero.getBag().toString() + "}" + "\n");
-			
-			fw.write("Stage:" + stage);
-			
-			fw.flush();
-			fw.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
-	public static Hero loadGameSaved() {
-		System.out.print("Diga o nome do arquivo: ");
-		String name = in.next();
-		
-		return loadGameSaved(name);
+		System.out.println("End Program");
 	}
-	
-	public static Hero loadGameSaved(String name) {
 		
-		MagicHero hero = null;
-		
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("saves/"+name+".titan"));
-			
-			String line = "";
-			
-			while(br.ready()) {
-				line = br.readLine().split(":")[1];
-				String heroName = line;
-				
-				line = br.readLine().split(":")[1];
-				int initHability = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int hability = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int initEnergy = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int energy = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int initLuck = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int luck = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int initPower = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int power = Integer.parseInt(line);
-				
-				line = br.readLine().split(":")[1];
-				int provisoes = Integer.parseInt(line);
-				
-				hero = new MagicHero(heroName, initHability, initEnergy, initLuck, initPower);
-				hero.setHability(hability);
-				hero.setEnergy(energy);
-				hero.setLuck(luck);
-				hero.setPower(power);
-				hero.setProvisoes(provisoes);
-				
-				line = br.readLine().split(":")[1];
-				Weapon weapon = EnumWeapon.valueOf(line).getWeapon();
-				hero.setWeapon(weapon);
-				
-				line = br.readLine().split(":")[1];
-				Armour armour = EnumArmour.valueOf(line).getArmour();
-				hero.setArmour(armour);
-				
-				line = br.readLine().split(":")[1];
-				String[] bag = line.substring(2, line.length()-2).split(",");
-				
-				for(String item : bag) {
-					hero.addItemInBag(EnumItem.valueOf(item).getItem());
-				}
-				
-				line = br.readLine().split(":")[1];
-				stage = Integer.parseInt(line);
-				
-			}
-			
-			br.close();
-			
-		} catch (IOException e) {
-			// TODO Auto-generabr.readLine();ted catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println();
-		
-		return hero;
-	}
 }

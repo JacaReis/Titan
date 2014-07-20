@@ -1,6 +1,6 @@
 package models.creatures.special;
 
-import models.busnisses.BasicsFunctions;
+import controllers.GameActions;
 import models.creatures.Creature;
 
 public class HomemGorgulho extends Creature {
@@ -11,7 +11,7 @@ public class HomemGorgulho extends Creature {
 
 	public void receiveDamage(int damage) {
 		
-		int dice = BasicsFunctions.throwDice();
+		int dice = GameActions.throwDice();
 		
 		if(dice <= 3 && damage > 0) {
 			System.out.println("Homem Gorgulho conseguiu evitar todo o golpe!");

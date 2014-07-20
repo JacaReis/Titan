@@ -1,9 +1,10 @@
 package models.creatures;
 
 import models.itens.Item;
+import models.itens.Provision;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import models.equipament.Armour;
 import models.equipament.Weapon;
@@ -18,9 +19,9 @@ import models.equipament.Weapon;
 public class Hero extends Creature {
 	
 	protected int initLuck, luck;
-	protected int provisoes;
-
-	protected List<Item> bag;
+	protected int stage;
+	
+	protected Map<Item, Integer> bag;
 	
 	protected Weapon weapon;
 	protected Armour armour;
@@ -31,9 +32,12 @@ public class Hero extends Creature {
 		this.initLuck = luck;
 		this.luck = this.initLuck;
 		
-		this.provisoes = 0;
-		this.bag = new ArrayList<Item>();
+		this.stage = 0;
+		this.bag = new HashMap<Item, Integer>();
+		this.bag.put(new Provision(), 0);
 	}
+	
+	/* GETTERS */
 	
 	public int getInitLuck() {
 		return initLuck;
@@ -43,44 +47,52 @@ public class Hero extends Creature {
 		return luck;
 	}
 
-	public Armour getArmour() {
-		return armour;
-	}
-	
-	public List<Item> getBag() {
-		return bag;
-	}
-	
-	public int getProvisoes() {
-		return provisoes;
-	}
-	
 	public Weapon getWeapon() {
 		return weapon;
 	}
 	
-	public void upLuckPoint() {
-		this.initLuck++;
+	public Armour getArmour() {
+		return armour;
 	}
+	
+	public Map<Item, Integer> getBag() {
+		return bag;
+	}
+	
+//	public int getProvisoes() {
+//		return provision;
+//	}
+	
+	public int getStage() {
+		return stage;
+	}
+	
+	/* SETTERS */
 	
 	public void setLuck(int luck) {
 		this.luck = luck;
 	}
 
-	public void setProvisoes(int provisoes) {
-		this.provisoes = provisoes;
+//	public void setProvisoes(int provision) {
+//		this.provision = provision;
+//	}
+
+	public void setWeapon(Weapon weapon) {
+		this.weapon = weapon;
 	}
-	
+
 	public void setArmour(Armour armour) {
 		this.armour = armour;
 	}
 	
-	public void setBag(List<Item> bag) {
-		this.bag = bag;
+	public void setStage(int stage) {
+		this.stage = stage;
 	}
 	
-	public void setWeapon(Weapon weapon) {
-		this.weapon = weapon;
+	/* OTHERS */
+	
+	public void upLuckPoint() {
+		this.initLuck++;
 	}
 	
 	public void testLuck() {
@@ -88,7 +100,35 @@ public class Hero extends Creature {
 	}
 
 	public void addItemInBag(Item newItem) {
-		this.bag.add(newItem);
+		addItemInBag(newItem, 1);
+	}
+
+	public void addItemInBag(Item newItem, int n) {
+		boolean puted = false;
+		
+		for(Item item : this.bag.keySet()) {
+			if(item.equals(newItem)) {
+				int quant = this.bag.get(item) + n;
+				this.bag.put(item, quant);
+				puted = true;
+			}
+		}
+		if(!puted) {
+			this.bag.put(newItem, n);
+		}
+	}
+	
+	public void incrementProvisoes(int quant) {
+		int provions = this.bag.get(0);
+		this.bag.put(new Provision(), provions+quant);
+	}
+	
+	/* Overrides */
+	
+	@Override
+	public void attack(Creature creature, int damage) {
+		System.out.println("Voce aplicou " + damage + " de dano.");
+		creature.receiveDamage(damage);
 	}
 	
 	@Override
@@ -97,15 +137,5 @@ public class Hero extends Creature {
 		str += "L: " + this.luck + "\n";
 
 		return str;
-	}
-
-	public void incrementProvisoes(int quant) {
-		this.provisoes += quant;
-	}
-	
-	@Override
-	public void attack(Creature creature, int damage) {
-		System.out.println("Voce aplicou " + damage + " de dano.");
-		creature.receiveDamage(damage);
 	}
 }

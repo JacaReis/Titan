@@ -1,1 +1,6 @@
 bin/*
+books/*
+src/ConvertPDFToXML.java
+src/Extract.java
+src/ExtractMetadata.java
+src/PrintFields.java

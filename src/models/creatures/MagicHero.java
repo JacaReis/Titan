@@ -2,6 +2,7 @@ package models.creatures;
 
 import java.util.List;
 
+import models.itens.Item;
 import models.magics.Magic;
 
 /**
@@ -13,21 +14,17 @@ import models.magics.Magic;
 public class MagicHero extends Hero {
 	
 	protected List<Magic> magics;
-	protected int initPower, power;
+	protected int power;
 	
 	public MagicHero(String name, int hability, int energy, int luck, int power) {
 		super(name, hability, energy, luck);
 		
-		this.initPower = power;
-		this.power = this.initPower;
+//		this.initPower = power;
+		this.power = power;
 	}
 	
 	public List<Magic> getMagics() {
 		return this.magics;
-	}
-	
-	public int getInitPower() {
-		return initPower;
 	}
 	
 	public int getPower() {

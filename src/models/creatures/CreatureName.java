@@ -14,6 +14,9 @@ public enum CreatureName {
 	RAIZES("Raízes", 6, 12),
 	LAGARTO_KOMODO("Lagarto Komodo", 6, 8),
 	ALTERADOR_DE_FORMA("Alterador de Forma", 10, 10),
+	JAVALI_SELVAGEM("Javali Selvagem", 6, 5),
+	ARCTOLYCE("Arctolyce", 9, 14), // FIXME Valor correto: ARCTOLYCE("Arctolyce", 9, 16), 
+//	FIXME alterar a batalha para incluir magia
 	
 //	Errantes
 	EMPTY("",0,0),

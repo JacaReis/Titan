@@ -12,7 +12,20 @@ public abstract class Item {
 		this.name = name;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	public abstract void use(Creature... creatures);
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Item) {
+			return ((Item) obj).getName().equalsIgnoreCase(this.name);
+		}
+		
+		return false;
+	}
 	
 	@Override
 	public String toString() {

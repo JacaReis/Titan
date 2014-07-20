@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.creatures.Creature;
-import models.creatures.CreatureName;
+import models.creatures.EnumCreature;
 
 /**
  * Fabrica de criaturas.<br>
@@ -16,19 +16,19 @@ import models.creatures.CreatureName;
  */
 public class FactoryCreature {
 	
-	private List<CreatureName> creatures;
+	private List<EnumCreature> creatures;
 	
 	public FactoryCreature() {
-		this.creatures = new ArrayList<CreatureName>();
+		this.creatures = new ArrayList<EnumCreature>();
 	}
 	
-	public void setCreatures(CreatureName[] creatures) {
-		for(CreatureName creature : creatures) {
+	public void setCreatures(EnumCreature[] creatures) {
+		for(EnumCreature creature : creatures) {
 			this.creatures.add(creature);
 		}
 	}
 	
-	public void setCreatures(List<CreatureName> creatures) {
+	public void setCreatures(List<EnumCreature> creatures) {
 		this.creatures = creatures;
 	}
 	
