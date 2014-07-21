@@ -1,6 +1,6 @@
 package models.equipament;
 
-public abstract class Weapon {
+public abstract class Weapon implements Cloneable {
 	
 	protected String name;
 	
@@ -11,5 +11,16 @@ public abstract class Weapon {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+	
+	@Override
+	protected Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

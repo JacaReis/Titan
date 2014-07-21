@@ -44,6 +44,6 @@ public enum EnumCreature {
 	}
 	
 	public Creature getCreature() {
-		return creature;
+		return (Creature) creature.clone();
 	}
 }

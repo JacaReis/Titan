@@ -14,6 +14,6 @@ public enum EnumWeapon {
 	}
 	
 	public Weapon getWeapon() {
-		return this.weapon;
+		return (Weapon) this.weapon.clone();
 	}
 }

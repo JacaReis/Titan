@@ -2,7 +2,7 @@ package models.dreamCreatures;
 
 import models.creatures.Creature;
 
-public class DreamCreature {
+public class DreamCreature implements Cloneable {
 
 	private String name;
 	private int power;
@@ -31,5 +31,15 @@ public class DreamCreature {
 	public void effect(Creature creature) {
 //		FIXME Receber uma criatura com poder (PowerCreature)
 //		Especificar em cada criatura
+	}
+	
+	@Override
+	protected Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+		}
+		return null;
 	}
 }

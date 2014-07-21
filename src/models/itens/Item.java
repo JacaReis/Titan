@@ -2,7 +2,7 @@ package models.itens;
 
 import models.creatures.Creature;
 
-public abstract class Item {
+public abstract class Item implements Cloneable {
 
 	protected String name;
 	protected String description;
@@ -30,6 +30,17 @@ public abstract class Item {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+	
+	@Override
+	protected Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

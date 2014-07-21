@@ -15,6 +15,6 @@ public enum EnumItem {
 	}
 	
 	public Item getItem() {
-		return item;
+		return (Item) item.clone();
 	}
 }

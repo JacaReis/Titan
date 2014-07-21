@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import models.creatures.Creature;
@@ -60,18 +62,81 @@ public class GameActions {
 		return hadLuck;
 	}
 	
-	public  boolean simpleBattle(Hero hero, Creature oponent) {
+	public void combat(Hero hero, Creature oponent) {
+		
+		int dice_1_oponent = throwDice();
+		int dice_2_oponent = throwDice();
+		
+		int oponent_attack_power = (oponent.getHability() + dice_1_oponent + dice_2_oponent);
+		
+		System.out.println("Poder de ataque do "+oponent.getName()+": " + oponent_attack_power);
+		
+		int dice_1_hero = throwDice();
+		int dice_2_hero = throwDice();
+		
+		int hero_attack_power = (hero.getHability() + dice_1_hero + dice_2_hero);
+		
+		System.out.println("Seu poder de ataque: " + hero_attack_power);
+		
+		if(hero_attack_power > oponent_attack_power) {
+			int damage = 2;
+			
+			System.out.println("Voce quer testar a sorte para aumentar o dano no oponente? (y/n)");
+			
+			if(in.next().charAt(0) == 'y') {
+				damage = (testLuck(hero))? 3 : 1 ;
+			}
+			
+			hero.attack(oponent, damage);
+			
+		}
+		else if(hero_attack_power < oponent_attack_power) {
+			int damage = 2;
+			
+			System.out.println("Voce quer testar a sorte para dimiuir o dano recebido? (y/n)");
+			
+			if(in.next().charAt(0) == 'y') {
+				damage = (testLuck(hero))? 1 : 3 ;
+			}
+			
+			oponent.attack(hero, damage);
+			
+		}
+		else {
+			// Empate, ambos evitaram os ataques
+		}
+	}
+	
+	public boolean battle(Hero hero) {
+		System.out.print("Quantas criaturas esta combatendo: ");
+		int quant = in.nextInt();
+
+		List<Creature> creatures = new ArrayList<Creature>();
+		
+		for(int i = 0; i < quant; i++) {
+			System.out.print("Qual o nome da criatura: ");
+			String name = in.next();
+			creatures.add(EnumCreature.valueOf(name).getCreature());
+		}
+		
+		// Let's go to fight!!!
+		battle(hero, creatures);
+		
+		return !hero.isDead();
+	}
+	
+	public boolean battle(Hero hero, List<Creature> oponents) {
 		
 		boolean isFighting = true;
 		
 		while(isFighting) {
-			
 			{
 //				Print HP dos combatentes
-				System.out.println(oponent.getName());
-				for(int i = 0; i < oponent.getEnergy(); i++) System.out.print("#");
-				
-				System.out.println();
+				for(Creature oponent : oponents) {
+					System.out.println(oponent.getName());
+					for(int i = 0; i < oponent.getEnergy(); i++) System.out.print("#");
+					System.out.println();
+				}
 				
 				System.out.println(hero.getName());
 				for(int i = 0; i < hero.getEnergy(); i++) System.out.print("#");
@@ -79,80 +144,19 @@ public class GameActions {
 				System.out.println();
 			}
 			
-			int dice_1_oponent = throwDice();
-			int dice_2_oponent = throwDice();
-			
-			int oponent_attack_power = (oponent.getHability() + dice_1_oponent + dice_2_oponent);
-			
-			System.out.println("Poder de ataque do "+oponent.getName()+": " + oponent_attack_power);
-			
-			int dice_1_hero = throwDice();
-			int dice_2_hero = throwDice();
-			
-			int hero_attack_power = (hero.getHability() + dice_1_hero + dice_2_hero);
-			
-			System.out.println("Seu poder de ataque: " + hero_attack_power);
-			
-			if(hero_attack_power > oponent_attack_power) {
-				int damage = 2;
+			for(int i = 0; i < oponents.size(); i++) {
+				combat(hero, oponents.get(i));
 				
-				System.out.println("Voce quer testar a sorte para aumentar o dano no oponente? (y/n)");
-				
-				if(in.next().charAt(0) == 'y') {
-					damage = (testLuck(hero))? 3 : 1 ;
+				if(oponents.get(i).isDead()) {
+					oponents.remove(i);
+					i--;
 				}
-				
-				hero.attack(oponent, damage);
-				
-			}
-			else if(hero_attack_power < oponent_attack_power) {
-				int damage = 2;
-				
-				System.out.println("Voce quer testar a sorte para dimiuir o dano recebido? (y/n)");
-				
-				if(in.next().charAt(0) == 'y') {
-					damage = (testLuck(hero))? 1 : 3 ;
-				}
-				
-				oponent.attack(hero, damage);
-				
-			}
-			else {
-				// Empate, continua a luta
-				oponent.receiveDamage(0);
 			}
 			
-			isFighting = !(oponent.isDead() || hero.isDead());
+			isFighting = !oponents.isEmpty() && !hero.isDead();
 		}
 		
-		return !(hero.isDead());
-	}
-	
-	public  boolean battle(Hero hero) {
-		System.out.print("Quantas criaturas esta combatendo: ");
-		int quant = in.nextInt();
-
-		Creature[] creatures = new Creature[quant];
-		
-		for(int i = 0; i < creatures.length; i++) {
-			System.out.print("Qual o nome da criatura: ");
-			String name = in.next();
-			creatures[i] = EnumCreature.valueOf(name).getCreature();
-		}
-		
-		// Let's go to fight!!!
-		boolean heroWin = true;
-		
-		// For just one oponent
-		if(creatures.length == 1) {
-			heroWin = simpleBattle(hero, creatures[0]);
-		}
-		else {
-		// FIXME Tratar batalha com mais de um oponente
-			System.out.println("Only shit... /o\\");
-		}
-		
-		return heroWin;
+		return !hero.isDead();
 	}
 	
 	public Hero createHero(boolean isMagicHero) {
@@ -250,7 +254,6 @@ public class GameActions {
 		return hero.getPower()!=0;
 	}
 
-
 	public void searchProvisions(Hero hero) {
 		int dice = throwDice();
 		
@@ -263,7 +266,10 @@ public class GameActions {
 					"voce encontrou um "+creature.getName()+"!\n" +
 					"Voce tem que derrota-lo!");
 			
-			simpleBattle(hero, creature);
+			List<Creature> creatures = new ArrayList<Creature>();
+			creatures.add(creature);
+			
+			battle(hero, creatures);
 		}
 		
 		if(!hero.isDead()) {

@@ -6,7 +6,7 @@ package models.creatures;
  * @author Jaca Reis
  *
  */
-public abstract class Creature {
+public abstract class Creature implements Cloneable {
 
 	protected String name;
 	protected int initHability, hability;
@@ -87,4 +87,14 @@ public abstract class Creature {
 		return str;
 	}
 
+	@Override
+	protected Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }
